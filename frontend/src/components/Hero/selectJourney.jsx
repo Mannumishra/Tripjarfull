@@ -14,24 +14,11 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 function CustomTabPanel(props) {
-
-
   const { children, value, index, ...other } = props;
-
-
-
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
+    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`}{...other}>
       {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
+        <Box sx={{ p: 3 }}><Typography>{children}</Typography></Box>
       )}
     </div>
   );
@@ -51,17 +38,11 @@ function a11yProps(index) {
 }
 
 export default function BasicTabs() {
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    borderRadius: '30px',
-    boxShadow: 24,
-    p: 4,
-  };
+  const style = { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', borderRadius: '30px', boxShadow: 24, p: 4, };
+  const [cityInputs, setCityInputs] = useState([
+    { from: "", to: "", departure: "", totalPerson: "" },
+    { from: "", to: "", departure: "", totalPerson: "" },
+  ]);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [value, setValue] = React.useState(0);
@@ -88,59 +69,64 @@ export default function BasicTabs() {
     setDropopen(false);
   };
 
-  const [flightData, setFlightData] = useState({
-    from: "",
-    to: "",
-    departure: "",
-    returnDate: "",
-    totalPerson: "",
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-  })
+  const [flightData, setFlightData] = useState({ from: "", to: "", departure: "", returnDate: "", totalPerson: "", name: "", email: "", phone: "", address: "", })
+  const [multiflightData, setMultiFlightData] = useState({
+    name: "", email: "", phone: "", address: "",
+    allCity: []  // this will hold the cities
+  });
+  const handleAddCity = () => {
+    setCityInputs([...cityInputs, { from: "", to: "", departure: "", totalPerson: "" }]);
+  };
 
+  const handleCityChange = (index, e) => {
+    const { name, value } = e.target;
+    const updatedCityInputs = cityInputs.map((input, i) =>
+      i === index ? { ...input, [name]: value } : input
+    );
+    setCityInputs(updatedCityInputs);
+  };
+  const handleRemoveCity = (index) => {
+    const updatedCityInputs = cityInputs.filter((input, i) => i !== index);
+    setCityInputs(updatedCityInputs);
+  };
   const getFlightInputdata = (e) => {
     const { name, value } = e.target
     setFlightData({ ...flightData, [name]: value })
   }
-
+  const getmultiFlightInputdata = (e) => {
+    const { name, value } = e.target
+    setMultiFlightData({ ...multiflightData, [name]: value })
+  }
   const SubmitFlightdata = async (e) => {
     e.preventDefault()
     try {
       const res = await axios.post("http://localhost:8000/api/flight", flightData)
       if (res.status === 200) {
         toast.success("Your Inquery Send Successfully")
-        setFlightData({
-          from: "",
-          to: "",
-          departure: "",
-          returnDate: "",
-          totalPerson: "",
-          name: "",
-          email: "",
-          phone: "",
-          address: "",
-        })
+        setFlightData({ from: "", to: "", departure: "", returnDate: "", totalPerson: "", name: "", email: "", phone: "", address: "", })
       }
     } catch (error) {
       console.log(error)
     }
   }
 
+  const SubmitallFlightdata = async (e) => {
+    e.preventDefault();
+    const completeFlightData = { ...multiflightData, allCity: cityInputs };  // adding all city data to flight data
+    try {
+      const res = await axios.post("http://localhost:8000/api/send-data", completeFlightData);
+      if (res.status === 201) {
+        toast.success("Your inquiry has been sent successfully");
+        setMultiFlightData({ name: "", email: "", phone: "", address: "", allCity: [] });
+        setCityInputs([{ from: "", to: "", departure: "", totalPerson: "" }]);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-  const [hotelData, setHotelData] = useState({
-    where: "",
-    checkIn: "",
-    checkOut: "",
-    numberofroom: "",
-    adults: "",
-    children: "",
-    hotelname: "",
-    hotelemail: "",
-    hotelphone: "",
-    hoteladdress: "",
-  })
+
+  const [hotelData, setHotelData] = useState({ where: "", checkIn: "", checkOut: "", numberofroom: "", adults: "", children: "", hotelname: "", hotelemail: "", hotelphone: "", hoteladdress: "", })
 
   const getHotelInputdata = (e) => {
     const { name, value } = e.target
@@ -154,18 +140,7 @@ export default function BasicTabs() {
       const res = await axios.post("http://localhost:8000/api/hotel", hotelData)
       if (res.status === 200) {
         toast.success("Your Inquery Send Successfully")
-        setHotelData({
-          where: "",
-          checkIn: "",
-          checkOut: "",
-          numberofroom: "",
-          adults: "",
-          children: "",
-          hotelname: "",
-          hotelemail: "",
-          hotelphone: "",
-          hoteladdress: "",
-        })
+        setHotelData({ where: "", checkIn: "", checkOut: "", numberofroom: "", adults: "", children: "", hotelname: "", hotelemail: "", hotelphone: "", hoteladdress: "", })
       }
     } catch (error) {
       console.log(error)
@@ -175,202 +150,52 @@ export default function BasicTabs() {
     <>
       <Container>
         <div className="container">
-          <Box
-            sx={{
-              padding: { xs: "0rem", md: "3rem", sm: "3rem" },
-              marginTop: { xs: "0rem", sm: "-3rem", md: "-4rem" },
-              borderRadius: { xs: "0", md: "2rem", sm: "2rem" },
-              width: "100%",
-              position: "relative",
-              zIndex: "1",
-              boxShadow: "0rem 0rem 3rem 0rem gray",
-              background: "white",
-            }}
-          >
-            <Typography
-              sx={{
-                paddingTop: { xs: "1rem", md: "0rem", sm: "0rem" },
-                textAlign: { xs: "center", md: "start", sm: "start" },
-              }}
-              mb={2}
-              pt={2}
-            >
-              <Button
-                style={{ marginRight: "1rem", color: 'brown', border: '1px solid brown' }}
-                onClick={onFlight}
-                variant="outlined"
-              >
-                <b>
-                  Flight
-                </b>
+          <Box sx={{ padding: { xs: "0rem", md: "3rem", sm: "3rem" }, marginTop: { xs: "0rem", sm: "-3rem", md: "-4rem" }, borderRadius: { xs: "0", md: "2rem", sm: "2rem" }, width: "100%", position: "relative", zIndex: "1", boxShadow: "0rem 0rem 3rem 0rem gray", background: "white", }}>
+            <Typography sx={{ paddingTop: { xs: "1rem", md: "0rem", sm: "0rem" }, textAlign: { xs: "center", md: "start", sm: "start" }, }} mb={2} pt={2}>
+              <Button style={{ marginRight: "1rem", color: 'brown', border: '1px solid brown' }} onClick={onFlight} variant="outlined">
+                <b>Flight</b>
                 <ConnectingAirportsIcon style={{ color: 'brown' }} />
               </Button>
               <Button onClick={onHotel} variant="outlined" style={{ color: 'brown', border: '1px solid brown' }}>
-                <b>
-                  Hotel
-                </b>
+                <b>Hotel</b>
                 <HomeWorkIcon style={{ color: 'brown' }} />
               </Button>
             </Typography>
             {isactive === "flight" ? (
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                <Tabs
-                  value={value}
-                  onChange={handleChange}
-                  aria-label="basic tabs example"
-                >
-                  <Tab
-                    style={{
-                      textTransform: "capitalize",
-                      fontSize: "18px",
-                      color: "#7B3226",
-                      letterSpacing: "1px",
-                      fontWeight: "600",
-                    }}
-                    label="One Way"
-                    {...a11yProps(0)}
-                  />
-                  <Tab
-                    style={{
-                      textTransform: "capitalize",
-                      fontSize: "18px",
-                      color: "#7B3226",
-                      letterSpacing: "1px",
-                      fontWeight: "600",
-                    }}
-                    label="Round-Trip"
-                    {...a11yProps(1)}
-                  />
-                  <Tab
-                    style={{
-                      textTransform: "capitalize",
-                      fontSize: "18px",
-                      color: "#7B3226",
-                      letterSpacing: "1px",
-                      fontWeight: "600",
-                    }}
-                    label="Multi-City"
-                    {...a11yProps(2)}
-                  />
+                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                  <Tab style={{ textTransform: "capitalize", fontSize: "18px", color: "#7B3226", letterSpacing: "1px", fontWeight: "600", }} label="One Way"{...a11yProps(0)} />
+                  <Tab style={{ textTransform: "capitalize", fontSize: "18px", color: "#7B3226", letterSpacing: "1px", fontWeight: "600", }} label="Round-Trip"{...a11yProps(1)} />
+                  <Tab style={{ textTransform: "capitalize", fontSize: "18px", color: "#7B3226", letterSpacing: "1px", fontWeight: "600", }} label="Multi-City"{...a11yProps(2)} />
                 </Tabs>
                 <CustomTabPanel value={value} index={0}>
-                  <Box
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
+                  <Box style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }} >
                     <form action="">
                       <Grid container spacing={1}>
                         <Grid xs={12} p={1} md={2}>
-                          <label htmlFor="">
-                            <b>From</b>
-                          </label>
-                          <TextField
-                            style={{ width: "98%" }}
-                            id="outlined-basic"
-                            placeholder="Enter city or airport"
-                            variant="outlined"
-                            onChange={getFlightInputdata}
-                            name="from"
-                            value={flightData.from}
-                          />
+                          <label htmlFor=""> <b>From</b> </label>
+                          <TextField style={{ width: "98%" }} id="outlined-basic" placeholder="Enter city or airport" variant="outlined" onChange={getFlightInputdata} name="from" value={flightData.from} />
                         </Grid>
                         <Grid xs={12} p={1} md={2}>
-                          <label htmlFor="">
-                            <b>To</b>
-                          </label>
-                          <TextField
-                            style={{ width: "98%" }}
-                            id="outlined-basic"
-                            placeholder="Enter city or airport"
-                            variant="outlined"
-                            onChange={getFlightInputdata}
-                            name="to"
-                            value={flightData.to}
-                          />
+                          <label htmlFor=""><b>To</b></label>
+                          <TextField style={{ width: "98%" }} id="outlined-basic" placeholder="Enter city or airport" variant="outlined" onChange={getFlightInputdata} name="to" value={flightData.to} />
                         </Grid>
                         <Grid xs={12} p={1} md={2}>
-                          <label htmlFor="">
-                            <b>Departure</b>
-                          </label>
-                          <Box
-                            style={{
-                              padding: "15px",
-                              borderRadius: "8px",
-                              width: "98%",
-                              border: '1px solid lightgray'
-                            }}
-                          >
-                            <input
-                              style={{ width: "100%" }}
-                              type="date"
-                              id="Departure"
-                              name="departure"
-                              onChange={getFlightInputdata}
-                              value={flightData.departure}
-                            />
+                          <label htmlFor=""> <b>Departure</b>   </label>
+                          <Box style={{ padding: "15px", borderRadius: "8px", width: "98%", border: '1px solid lightgray' }}>
+                            <input style={{ width: "100%" }} type="date" id="Departure" name="departure" onChange={getFlightInputdata} value={flightData.departure} />
                           </Box>
                         </Grid>
                         <Grid xs={12} p={1} md={2}>
-                          <label htmlFor="">
-                            <b>Return</b>
-                          </label>
-                          <Box
-                            style={{
-                              padding: "15px",
-                              border: "1px solid lightgray",
-                              borderRadius: "8px",
-                              width: "98%",
-                            }}
-                          >
-                            <input style={{ width: "100%" }} type="date" id="return" name="returnDate" value={flightData.returnDate} onChange={getFlightInputdata} />
-                          </Box>
-                        </Grid>
-                        <Grid xs={12} p={1} md={2}>
-                          <label htmlFor="">
-                            <b>Total Person</b>
-                          </label>
-                          <Box
-                            style={{
-                              padding: "15px",
-                              border: "1px solid lightgray",
-                              borderRadius: "8px",
-                              width: "100%",
-                            }}
-                          >
-                            <input
-                              style={{ width: "100%" }}
-                              type="number"
-                              placeholder="Select Person"
-                              name="totalPerson"
-                              id=""
-                              onChange={getFlightInputdata}
-                              value={flightData.totalPerson}
-                            />
+                          <label htmlFor=""> <b>Total Person</b> </label>
+                          <Box style={{ padding: "15px", border: "1px solid lightgray", borderRadius: "8px", width: "100%", }}>
+                            <input style={{ width: "100%" }} type="number" placeholder="Select Person" name="totalPerson" id="" onChange={getFlightInputdata} value={flightData.totalPerson} />
                           </Box>
                         </Grid>
                         <Grid style={{ display: 'flex', alignItems: 'center' }} item xs={12} md={2}>
-                          <Button
-                            onClick={handleOpen}
-                            style={{
-                              padding: "1rem",
-                              marginTop: '1rem',
-                              width: "100%",
-                              background: "brown",
-                            }}
-                            variant="contained"
-                          >
-                            Next
-                          </Button>
+                          <Button onClick={handleOpen} style={{ padding: "1rem", marginTop: '1rem', width: "100%", background: "brown", }} variant="contained" >Next  </Button>
                           <div>
-                            <Modal
-                              open={open}
-                              onClose={handleClose}
-                              aria-labelledby="modal-modal-title"
-                              aria-describedby="modal-modal-description"
-                            >
+                            <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
                               <Box sx={style}>
                                 <Typography id="modal-modal-title" variant="h6" component="h2">
                                   Please Enter Your Details
@@ -378,22 +203,18 @@ export default function BasicTabs() {
                                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                                   <Box>
                                     <Typography>
-
                                       <Label /> <label htmlFor="">Enter Your Full Name</label>
                                       <TextField id="outlined-basic" fullWidth label="Enter Your Full Name" variant="outlined" value={flightData.name} name="name" onChange={getFlightInputdata} />
                                     </Typography>
                                     <Typography style={{ marginTop: '1rem' }}>
-
                                       <Label /> <label htmlFor="">Enter Your Email</label>
                                       <TextField id="outlined-basic" fullWidth label="Enter Your Email" variant="outlined" value={flightData.email} name="email" onChange={getFlightInputdata} />
                                     </Typography>
                                     <Typography style={{ marginTop: '1rem' }}>
-
                                       <Label /> <label htmlFor="">Phone Number</label>
                                       <TextField id="outlined-basic" fullWidth label="Enter Your Number" type="number" variant="outlined" value={flightData.phone} name="phone" onChange={getFlightInputdata} />
                                     </Typography>
                                     <Typography style={{ marginTop: '1rem' }}>
-
                                       <Label /> <label htmlFor="">Address</label>
                                       <TextField id="outlined-basic" fullWidth label="Enter Your Number" variant="outlined" name="address" value={flightData.address} onChange={getFlightInputdata} />
                                     </Typography>
@@ -412,123 +233,39 @@ export default function BasicTabs() {
                 </CustomTabPanel>
 
                 <CustomTabPanel value={value} index={1}>
-                  <Box
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
+                  <Box style={{ display: "flex", alignItems: "center", justifyContent: "space-between", }} >
                     <form action="">
                       <Grid container spacing={1}>
                         <Grid xs={12} p={1} md={2}>
-                          <label htmlFor="">
-                            <b>From</b>
-                          </label>
-                          <TextField
-                            style={{ width: "98%" }}
-                            id="outlined-basic"
-                            placeholder="Enter city or airport"
-                            variant="outlined"
-                            onChange={getFlightInputdata}
-                            name="from"
-                            value={flightData.from}
-                          />
+                          <label htmlFor="">  <b>From</b> </label>
+                          <TextField style={{ width: "98%" }} id="outlined-basic" placeholder="Enter city or airport" variant="outlined" onChange={getFlightInputdata} name="from" value={flightData.from} />
                         </Grid>
                         <Grid xs={12} p={1} md={2}>
-                          <label htmlFor="">
-                            <b>To</b>
-                          </label>
-                          <TextField
-                            style={{ width: "98%" }}
-                            id="outlined-basic"
-                            placeholder="Enter city or airport"
-                            variant="outlined"
-                            onChange={getFlightInputdata}
-                            name="to"
-                            value={flightData.to}
-                          />
+                          <label htmlFor=""><b>To</b></label>
+                          <TextField style={{ width: "98%" }} id="outlined-basic" placeholder="Enter city or airport" variant="outlined" onChange={getFlightInputdata} name="to" value={flightData.to} />
                         </Grid>
                         <Grid xs={12} p={1} md={2}>
-                          <label htmlFor="">
-                            <b>Departure</b>
-                          </label>
-                          <Box
-                            style={{
-                              padding: "15px",
-                              borderRadius: "8px",
-                              width: "98%",
-                              border: '1px solid lightgray'
-                            }}
-                          >
-                            <input
-                              style={{ width: "100%" }}
-                              type="date"
-                              id="Departure"
-                              name="departure"
-                              onChange={getFlightInputdata}
-                              value={flightData.departure}
-                            />
+                          <label htmlFor=""> <b>Departure</b> </label>
+                          <Box style={{ padding: "15px", borderRadius: "8px", width: "98%", border: '1px solid lightgray' }} >
+                            <input style={{ width: "100%" }} type="date" id="Departure" name="departure" onChange={getFlightInputdata} value={flightData.departure} />
                           </Box>
                         </Grid>
                         <Grid xs={12} p={1} md={2}>
-                          <label htmlFor="">
-                            <b>Return</b>
-                          </label>
-                          <Box
-                            style={{
-                              padding: "15px",
-                              border: "1px solid lightgray",
-                              borderRadius: "8px",
-                              width: "98%",
-                            }}
-                          >
+                          <label htmlFor=""> <b>Return</b>  </label>
+                          <Box style={{ padding: "15px", border: "1px solid lightgray", borderRadius: "8px", width: "98%", }} >
                             <input style={{ width: "100%" }} type="date" id="return" name="returnDate" value={flightData.returnDate} onChange={getFlightInputdata} />
                           </Box>
                         </Grid>
                         <Grid xs={12} p={1} md={2}>
-                          <label htmlFor="">
-                            <b>Total Person</b>
-                          </label>
-                          <Box
-                            style={{
-                              padding: "15px",
-                              border: "1px solid lightgray",
-                              borderRadius: "8px",
-                              width: "100%",
-                            }}
-                          >
-                            <input
-                              style={{ width: "100%" }}
-                              type="number"
-                              placeholder="Select Person"
-                              name="totalPerson"
-                              id=""
-                              onChange={getFlightInputdata}
-                              value={flightData.totalPerson}
-                            />
+                          <label htmlFor=""> <b>Total Person</b>  </label>
+                          <Box style={{ padding: "15px", border: "1px solid lightgray", borderRadius: "8px", width: "100%", }} >
+                            <input style={{ width: "100%" }} type="number" placeholder="Select Person" name="totalPerson" id="" onChange={getFlightInputdata} value={flightData.totalPerson} />
                           </Box>
                         </Grid>
                         <Grid style={{ display: 'flex', alignItems: 'center' }} item xs={12} md={2}>
-                          <Button
-                            onClick={handleOpen}
-                            style={{
-                              padding: "1rem",
-                              marginTop: '1rem',
-                              width: "100%",
-                              background: "brown",
-                            }}
-                            variant="contained"
-                          >
-                            Next
-                          </Button>
+                          <Button onClick={handleOpen} style={{ padding: "1rem", marginTop: '1rem', width: "100%", background: "brown", }} variant="contained"   >  Next </Button>
                           <div>
-                            <Modal
-                              open={open}
-                              onClose={handleClose}
-                              aria-labelledby="modal-modal-title"
-                              aria-describedby="modal-modal-description"
-                            >
+                            <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description" >
                               <Box sx={style}>
                                 <Typography id="modal-modal-title" variant="h6" component="h2">
                                   Please Enter Your Details
@@ -536,22 +273,18 @@ export default function BasicTabs() {
                                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                                   <Box>
                                     <Typography>
-
                                       <Label /> <label htmlFor="">Enter Your Full Name</label>
                                       <TextField id="outlined-basic" fullWidth label="Enter Your Full Name" variant="outlined" value={flightData.name} name="name" onChange={getFlightInputdata} />
                                     </Typography>
                                     <Typography style={{ marginTop: '1rem' }}>
-
                                       <Label /> <label htmlFor="">Enter Your Email</label>
                                       <TextField id="outlined-basic" fullWidth label="Enter Your Email" variant="outlined" value={flightData.email} name="email" onChange={getFlightInputdata} />
                                     </Typography>
                                     <Typography style={{ marginTop: '1rem' }}>
-
                                       <Label /> <label htmlFor="">Phone Number</label>
                                       <TextField id="outlined-basic" fullWidth label="Enter Your Number" type="number" variant="outlined" value={flightData.phone} name="phone" onChange={getFlightInputdata} />
                                     </Typography>
                                     <Typography style={{ marginTop: '1rem' }}>
-
                                       <Label /> <label htmlFor="">Address</label>
                                       <TextField id="outlined-basic" fullWidth label="Enter Your Number" variant="outlined" name="address" value={flightData.address} onChange={getFlightInputdata} />
                                     </Typography>
@@ -571,108 +304,96 @@ export default function BasicTabs() {
 
                 <CustomTabPanel value={value} index={2}>
                   <Box
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
+                    style={{ display: "flex", alignItems: "center", justifyContent: "space-between", }} >
                     <form action="">
                       <Grid container spacing={1}>
-                        <Grid xs={12} p={1} md={2}>
-                          <label htmlFor="">
-                            <b>From</b>
-                          </label>
-                          <TextField
-                            style={{ width: "98%" }}
-                            id="outlined-basic"
-                            placeholder="Enter city or airport"
-                            variant="outlined"
-                            onChange={getFlightInputdata}
-                            name="from"
-                            value={flightData.from}
-                          />
-                        </Grid>
-                        <Grid xs={12} p={1} md={2}>
-                          <label htmlFor="">
-                            <b>To</b>
-                          </label>
-                          <TextField
-                            style={{ width: "98%" }}
-                            id="outlined-basic"
-                            placeholder="Enter city or airport"
-                            variant="outlined"
-                            onChange={getFlightInputdata}
-                            name="to"
-                            value={flightData.to}
-                          />
-                        </Grid>
-                        <Grid xs={12} p={1} md={2}>
-                          <label htmlFor="">
-                            <b>Departure</b>
-                          </label>
-                          <Box
-                            style={{
-                              padding: "15px",
-                              borderRadius: "8px",
-                              width: "98%",
-                              border: '1px solid lightgray'
-                            }}
-                          >
-                            <input
-                              style={{ width: "100%" }}
-                              type="date"
-                              id="Departure"
-                              name="departure"
-                              onChange={getFlightInputdata}
-                              value={flightData.departure}
-                            />
-                          </Box>
-                        </Grid>
-                        <Grid xs={12} p={1} md={2}>
-                          <label htmlFor="">
-                            <b>Return</b>
-                          </label>
-                          <Box
-                            style={{
-                              padding: "15px",
-                              border: "1px solid lightgray",
-                              borderRadius: "8px",
-                              width: "98%",
-                            }}
-                          >
-                            <input style={{ width: "100%" }} type="date" id="return" name="returnDate" value={flightData.returnDate} onChange={getFlightInputdata} />
-                          </Box>
-                        </Grid>
-                        <Grid xs={12} p={1} md={2}>
-                          <label htmlFor="">
-                            <b>Total Person</b>
-                          </label>
-                          <Box
-                            style={{
-                              padding: "15px",
-                              border: "1px solid lightgray",
-                              borderRadius: "8px",
-                              width: "100%",
-                            }}
-                          >
-                            <input
-                              style={{ width: "100%" }}
-                              type="number"
-                              placeholder="Select Person"
-                              name="totalPerson"
-                              id=""
-                              onChange={getFlightInputdata}
-                              value={flightData.totalPerson}
-                            />
-                          </Box>
-                        </Grid>
-                        <Grid style={{ display: 'flex', alignItems: 'center' }} item xs={12} md={2}>
+                        {cityInputs.map((city, index) => (
+                          <Grid container spacing={2} key={index} sx={{ mb: 2 }}>
+                            <Grid item xs={12} md={2}>
+                              <Typography><b>From</b></Typography>
+                              <TextField
+                                fullWidth
+                                placeholder="Enter city or airport"
+                                variant="outlined"
+                                name="from"
+                                value={city.from}
+                                onChange={(e) => handleCityChange(index, e)}
+                              />
+                            </Grid>
+                            <Grid item xs={12} md={2}>
+                              <Typography><b>To</b></Typography>
+                              <TextField
+                                fullWidth
+                                placeholder="Enter city or airport"
+                                variant="outlined"
+                                name="to"
+                                value={city.to}
+                                onChange={(e) => handleCityChange(index, e)}
+                              />
+                            </Grid>
+                            <Grid item xs={12} md={2}>
+                              <Typography><b>Departure</b></Typography>
+                              <TextField
+                                fullWidth
+                                type="date"
+                                name="departure"
+                                value={city.departure}
+                                onChange={(e) => handleCityChange(index, e)}
+                              />
+                            </Grid>
+                            <Grid item xs={12} md={2}>
+                              <Typography><b>Total Person</b></Typography>
+                              <TextField
+                                fullWidth
+                                type="number"
+                                name="totalPerson"
+                                placeholder="Select Person"
+                                value={city.totalPerson}
+                                onChange={(e) => handleCityChange(index, e)}
+                              />
+                            </Grid>
+                            <Grid item xs={12} md={2} mt={2}>
+                              {
+                                index > 1 && cityInputs.length > 2 ? (
+                                  <Button
+                                    onClick={() => handleRemoveCity(index)}
+                                    style={{ marginTop: '1rem', background: 'red' }}
+                                    variant="contained"
+                                  >
+                                    Remove City
+                                  </Button>
+                                ) : null
+                              }
+                            </Grid>
+
+                            <Grid item xs={12} md={2} mt={2}>
+                              {
+                                index > 0 && cityInputs.length > 1 ? (
+                                  <Button
+                                    onClick={handleAddCity}
+                                    style={{ marginTop: '1rem', background: 'brown' }}
+                                    variant="contained"
+                                  >
+                                    Add City
+                                  </Button>
+                                ) : null
+                              }
+                            </Grid>
+                          </Grid>
+                        ))}
+
+                        {/* Next Button */}
+                        <Grid
+                          style={{ display: "flex", alignItems: "center" }}
+                          item
+                          xs={12}
+                          md={2}
+                        >
                           <Button
                             onClick={handleOpen}
                             style={{
                               padding: "1rem",
-                              marginTop: '1rem',
+                              marginTop: "1rem",
                               width: "100%",
                               background: "brown",
                             }}
@@ -680,6 +401,8 @@ export default function BasicTabs() {
                           >
                             Next
                           </Button>
+
+                          {/* Modal for entering details */}
                           <div>
                             <Modal
                               open={open}
@@ -694,27 +417,63 @@ export default function BasicTabs() {
                                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                                   <Box>
                                     <Typography>
-
                                       <Label /> <label htmlFor="">Enter Your Full Name</label>
-                                      <TextField id="outlined-basic" fullWidth label="Enter Your Full Name" variant="outlined" value={flightData.name} name="name" onChange={getFlightInputdata} />
+                                      <TextField
+                                        id="outlined-basic"
+                                        fullWidth
+                                        label="Enter Your Full Name"
+                                        variant="outlined"
+                                        value={multiflightData.name}
+                                        name="name"
+                                        onChange={getmultiFlightInputdata}
+                                      />
                                     </Typography>
-                                    <Typography style={{ marginTop: '1rem' }}>
-
+                                    <Typography style={{ marginTop: "1rem" }}>
                                       <Label /> <label htmlFor="">Enter Your Email</label>
-                                      <TextField id="outlined-basic" fullWidth label="Enter Your Email" variant="outlined" value={flightData.email} name="email" onChange={getFlightInputdata} />
+                                      <TextField
+                                        id="outlined-basic"
+                                        fullWidth
+                                        label="Enter Your Email"
+                                        variant="outlined"
+                                        value={multiflightData.email}
+                                        name="email"
+                                        onChange={getmultiFlightInputdata}
+                                      />
                                     </Typography>
-                                    <Typography style={{ marginTop: '1rem' }}>
-
+                                    <Typography style={{ marginTop: "1rem" }}>
                                       <Label /> <label htmlFor="">Phone Number</label>
-                                      <TextField id="outlined-basic" fullWidth label="Enter Your Number" type="number" variant="outlined" value={flightData.phone} name="phone" onChange={getFlightInputdata} />
+                                      <TextField
+                                        id="outlined-basic"
+                                        fullWidth
+                                        label="Enter Your Number"
+                                        type="number"
+                                        variant="outlined"
+                                        value={multiflightData.phone}
+                                        name="phone"
+                                        onChange={getmultiFlightInputdata}
+                                      />
                                     </Typography>
-                                    <Typography style={{ marginTop: '1rem' }}>
-
+                                    <Typography style={{ marginTop: "1rem" }}>
                                       <Label /> <label htmlFor="">Address</label>
-                                      <TextField id="outlined-basic" fullWidth label="Enter Your Number" variant="outlined" name="address" value={flightData.address} onChange={getFlightInputdata} />
+                                      <TextField
+                                        id="outlined-basic"
+                                        fullWidth
+                                        label="Enter Your Number"
+                                        variant="outlined"
+                                        name="address"
+                                        value={multiflightData.address}
+                                        onChange={getmultiFlightInputdata}
+                                      />
                                     </Typography>
-                                    <Typography mt={3} style={{ display: 'flex', justifyContent: 'center' }}>
-                                      <Button style={{ background: 'brown' }} fullWidth variant="contained" onClick={SubmitFlightdata}>Submit</Button>
+                                    <Typography mt={3} style={{ display: "flex", justifyContent: "center" }}>
+                                      <Button
+                                        style={{ background: "brown" }}
+                                        fullWidth
+                                        variant="contained"
+                                        onClick={SubmitallFlightdata}
+                                      >
+                                        Submit
+                                      </Button>
                                     </Typography>
                                   </Box>
                                 </Typography>
@@ -725,15 +484,7 @@ export default function BasicTabs() {
                       </Grid>
                     </form>
                   </Box>
-                  <Box
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-
-                  </Box>
+                  <Box style={{ display: "flex", alignItems: "center", justifyContent: "space-between", }}  ></Box>
                 </CustomTabPanel>
               </Box>
             ) : isactive === "hotel" ? (
