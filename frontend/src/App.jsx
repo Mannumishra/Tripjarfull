@@ -21,6 +21,7 @@ import MostPopularTour from './components/MostPopularTour/MostPopularTour'
 import MostPopularDetail from './components/Most-Popular-Detail/MostPopularDetail'
 import Categorytour from './components/CategoryTour/Categorytour'
 import toast, { Toaster } from 'react-hot-toast';
+import AllTours from './components/AllTours/AllTours'
 
 // import LoginPage from './components/LoginPage/LoginPage'
 
@@ -46,6 +47,7 @@ function App() {
         <Route path='/seminar' element={<SeminarPage/>} />
         <Route path='/whychoose' element={<WhyChooseUsPage/>} />
         <Route path='/Our-Tour-Package-Detail/:_id' element={<MostPopularDetail/>} />
+        <Route path='/all-tours' element={<AllTours/>} />
 
         
       </Routes>

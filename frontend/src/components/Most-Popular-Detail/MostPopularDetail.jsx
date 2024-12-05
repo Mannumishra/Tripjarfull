@@ -258,7 +258,11 @@ const MostPopularDetail = () => {
             {data.slideimage &&
               data.slideimage.map((image, index) => (
                 <div key={index}>
-                  <img src={image} alt={`slide ${index}`} width="250px" height="250px" />
+                  <img
+                    src={image}
+                    alt={`slide ${index}`}
+                    style={{ width: "250px", height: "200px", objectFit: "cover" }}  // Fixed width and height
+                  />
                 </div>
               ))}
           </Slider>

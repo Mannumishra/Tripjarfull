@@ -13,7 +13,7 @@ const Categorytour = () => {
             if (res.status === 200) {
                 console.log(res)
                 const newData = res.data.data;
-                const filterData = newData.filter((x) => x.packagecity === key);
+                const filterData = newData.filter((x) => x.packagecity.trim() === key.trim());
                 setData(filterData);
             }
         } catch (error) {
