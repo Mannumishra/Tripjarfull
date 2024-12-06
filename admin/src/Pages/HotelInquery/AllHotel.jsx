@@ -21,8 +21,19 @@ const AllHotel = () => {
     useEffect(() => {
         getData()
     }, [])
-  
-  return (
+
+    const deleteRecord = async (id) => {
+        try {
+            const res = await axios.delete("http://localhost:8000/api/hotel/" + id)
+            if (res.status === 200) {
+                toast.success(res.data.message)
+                getData()
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return (
         <>
             <ToastContainer />
             <div className="bread">
@@ -34,22 +45,10 @@ const AllHotel = () => {
                 </div> */}
             </div>
 
-            <div className="filteration">
-                <div className="selects">
-                    {/* <select>
-                        <option>Ascending Order </option>
-                        <option>Descending Order </option>
-                    </select> */}
-                </div>
-                <div className="search">
-                    <label htmlFor="search">Search </label> &nbsp;
-                    <input type="text" name="search" id="search" />
-                </div>
-            </div>
 
             <section className="dis-table ">
                 <table class="table table-bordered table-striped table-hover">
-                <thead>
+                    <thead>
                         <tr>
                             <th scope="col">Sr.No.</th>
                             <th scope="col">Where</th>
@@ -62,29 +61,29 @@ const AllHotel = () => {
                             <th scope="col">Phone</th>
                             <th scope="col">Email</th>
                             <th scope="col">Address</th>
-                            {/* <th scope="col">Edit</th>
-                            <th scope="col">Delete</th> */}
+                            <th scope="col" className='text-danger'>Action</th>
+                            {/* <th scope="col">Delete</th> */}
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            data.map((item,index) =>
+                            data.map((item, index) =>
                                 <tr key={index}>
-                                    <th scope="row">{index+1}</th>
-                                   <td>{item.where}</td>
-                                   <td>{new Date(item.checkIn).toLocaleDateString()}</td>
-                                   <td>{new Date(item.checkOut).toLocaleDateString()}</td>
-                                   <td>{item.numberofroom} Room</td>
-                                   <td>{item.adults} Adults</td>
-                                   <td>{item.children} Children</td>
-                                   <td>{item.hotelname}</td>
-                                   <td>{item.hotelphone}</td>
-                                   <td>{item.hotelemail}</td>
-                                   <td>{item.hoteladdress}</td>
-                                    {/* <td><Link to={`/edit-tag/${item._id}`} className="bt edit">Edit <i class="fa-solid fa-pen-to-square"></i></Link></td>
-                                    <td><Link className="bt delete" onClick={()=>deleteRecord(item._id)}>Delete <i class="fa-solid fa-trash"></i></Link></td> */}
+                                    <th scope="row">{index + 1}</th>
+                                    <td>{item.where}</td>
+                                    <td>{new Date(item.checkIn).toLocaleDateString()}</td>
+                                    <td>{new Date(item.checkOut).toLocaleDateString()}</td>
+                                    <td>{item.numberofroom}</td>
+                                    <td>{item.adults}</td>
+                                    <td>{item?.children || 0}</td>
+                                    <td>{item.hotelname}</td>
+                                    <td>{item.hotelphone}</td>
+                                    <td>{item.hotelemail}</td>
+                                    <td>{item.hoteladdress}</td>
+                                    {/* <td><Link to={`/edit-tag/${item._id}`} className="bt edit">Edit <i class="fa-solid fa-pen-to-square"></i></Link></td> */}
+                                    <td><Link className="bt delete" onClick={() => deleteRecord(item._id)}>Delete <i class="fa-solid fa-trash"></i></Link></td>
                                 </tr>
-                                )
+                            )
                         }
                     </tbody>
                 </table>

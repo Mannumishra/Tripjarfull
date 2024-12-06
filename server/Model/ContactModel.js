@@ -8,12 +8,12 @@ const contactSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true, // Ensure email uniqueness
+    // Ensure email uniqueness
   },
   phoneNumber: {
     type: String,
     required: true,
-    unique: true,
+   
   },
   message: {
     type: String,

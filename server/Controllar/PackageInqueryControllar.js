@@ -41,12 +41,33 @@ exports.getInquiries = async (req, res) => {
     try {
         const inquiries = await PackageInquiry.find();
         res.status(200).json({
-            success:true,
-            data:inquiries
+            success: true,
+            data: inquiries
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
+exports.deletePackageQuery = async (req, res) => {
+    try {
+        const { id } = req.params
+        const package = await PackageInquiry.findById(id);
+        if (!package) {
+            return res.status(404).json({
+                success: false,
+                message: "Package Not Found"
+            })
+        }
+        await package.deleteOne()
+        res.status(200).json({
+            message: "Package Enquery Delete Successfully"
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
 

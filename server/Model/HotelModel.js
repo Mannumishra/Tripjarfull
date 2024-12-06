@@ -8,7 +8,7 @@ const reservationSchema = new Schema({
     checkOut: { type: Date, required: true },
     numberofroom: { type: Number, required: true },
     adults: { type: Number, required: true },
-    children: { type: Number, required: true },
+    children: { type: Number, },
     hotelname: { type: String, required: true },
     hotelemail: { type: String, required: true },
     hotelphone: { type: String, required: true },

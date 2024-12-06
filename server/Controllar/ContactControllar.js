@@ -15,22 +15,12 @@ exports.createContact = async (req, res) => {
                 message: errors.join(",")
             });
         }
-        const existingContact = await Contact.findOne({
-            $or: [{ email }, { phoneNumber }]
-        });
-
-        if (existingContact) {
-            return res.status(400).json({
-                success: false,
-                message: 'A contact with this email or phone number already exists.'
-            });
-        }
         const newContact = new Contact({ name, email, phoneNumber, message });
         await newContact.save();
         res.status(200).json({
             success: true,
             data: newContact,
-            message:"Your Query Send Successfully"
+            message: "Your Query Send Successfully"
         });
     } catch (error) {
         res.status(500).json({
@@ -54,3 +44,27 @@ exports.getContacts = async (req, res) => {
         });
     }
 };
+
+
+exports.deleteContacts = async (req, res) => {
+    try {
+        const { id } = req.params
+        const contacts = await Contact.findById(id);
+        if (!contacts) {
+            return res.status(404).json({
+                success: false,
+                message: "Contact Not Found"
+            })
+        }
+        await contacts.deleteOne()
+        res.status(200).json({
+            message: "Contact Enquery Delete Successfully"
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+

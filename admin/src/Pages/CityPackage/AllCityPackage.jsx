@@ -17,7 +17,7 @@ const Pagination = ({ itemsPerPage, totalItems, paginate }) => {
             <ul className="pagination">
                 {pageNumbers.map(number => (
                     <li key={number} className="page-item">
-                        <Link onClick={() => paginate(number)} to="/all-category" className="page-link">
+                        <Link onClick={() => paginate(number)} to="/all-city-package" className="page-link">
                             {number}
                         </Link>
                     </li>
@@ -30,7 +30,7 @@ const Pagination = ({ itemsPerPage, totalItems, paginate }) => {
 const AllCityPackage = () => {
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(3);
+    const [itemsPerPage] = useState(4);
 
     const getCitydata = async () => {
         try {

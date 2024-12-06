@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const flightSchema = new mongoose.Schema({
+const allcitySchema = new mongoose.Schema({
     from: {
         type: String,
         required: [true, "Please fill Form details"]
@@ -13,9 +13,6 @@ const flightSchema = new mongoose.Schema({
         type: Date,
         required: [true, "Please fill Date"]
     },
-    returnDate: {
-        type: Date,
-    },
     totalAdults: {
         type: Number,
         required: [true, "fill Adults details"]
@@ -23,7 +20,9 @@ const flightSchema = new mongoose.Schema({
     ,
     totalChildren: {
         type: Number,
-    },
+    }
+})
+const MultiCitySchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, "fill Name "]
@@ -38,11 +37,10 @@ const flightSchema = new mongoose.Schema({
     },
     address: {
         type: String,
-        required: [true, "fill Address"]
-    }
+    },
+    allCity: [allcitySchema]
+}, { timestamps: true })
 
-})
+const MultiCity = mongoose.model("Multy-city", MultiCitySchema)
 
-const flight = mongoose.model("flight", flightSchema)
-
-module.exports = flight
+module.exports = MultiCity

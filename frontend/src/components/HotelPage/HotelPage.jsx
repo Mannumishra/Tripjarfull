@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import "./HotelPage.css";
-import room1 from "./room1.jpg";
-import room2 from "./room2.jpg";
-import room3 from "./room3.jpg";
+import room1 from "../../assets/deluximage.avif";
+import room2 from "../../assets/excutiveroom.jpg";
+import room3 from "../../assets/standard categoryroom.png";
+import room4 from "../../assets/suite.jpg";
 import interf from "./internation-hotel.jpg";
 import dh from "./domestice-hotel.jpg";
 
@@ -137,11 +138,42 @@ function HotelPage() {
           <div className="main-container">
             <div className="same-col">
               <div className="img">
+                <img src={room3} alt="" />
+              </div>
+              <div className="content">
+                <div className="heading-star">
+                  <h4>Standard Category</h4>
+                  <div className="star">
+                    <i class="ri-star-s-fill"></i>
+                    <i class="ri-star-s-fill"></i>
+                    <i class="ri-star-s-fill"></i>
+                    {/* <i class="ri-star-s-fill"></i>
+                    <i class="ri-star-s-fill"></i> */}
+                  </div>
+                </div>
+                <div className="services">
+                  <div className="service-same">
+                    <i class="ri-hotel-bed-fill"></i>
+                    <span>2bed</span>
+                  </div>
+                  <div className="service-same">
+                    <i class="ri-restaurant-line"></i>
+                    <span>2Food</span>
+                  </div>
+                  <div className="service-same">
+                    <i class="ri-wifi-fill"></i>
+                    <span>Wifi</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="same-col">
+              <div className="img">
                 <img src={room1} alt="" />
               </div>
               <div className="content">
                 <div className="heading-star">
-                  <h4>Junior Suite</h4>
+                  <h4>Delux Category</h4>
                   <div className="star">
                     <i class="ri-star-s-fill"></i>
                     <i class="ri-star-s-fill"></i>
@@ -153,7 +185,7 @@ function HotelPage() {
                 <div className="services">
                   <div className="service-same">
                     <i class="ri-hotel-bed-fill"></i>
-                    <span>3bed</span>
+                    <span>1bed</span>
                   </div>
                   <div className="service-same">
                     <i class="ri-restaurant-line"></i>
@@ -172,19 +204,19 @@ function HotelPage() {
               </div>
               <div className="content">
                 <div className="heading-star">
-                  <h4>Executive Suite</h4>
+                  <h4>Executive Category</h4>
                   <div className="star">
                     <i class="ri-star-s-fill"></i>
                     <i class="ri-star-s-fill"></i>
                     <i class="ri-star-s-fill"></i>
                     <i class="ri-star-s-fill"></i>
-                    <i class="ri-star-s-fill"></i>
+                    {/* <i class="ri-star-s-fill"></i> */}
                   </div>
                 </div>
                 <div className="services">
                   <div className="service-same">
                     <i class="ri-hotel-bed-fill"></i>
-                    <span>3bed</span>
+                    <span>1bed</span>
                   </div>
                   <div className="service-same">
                     <i class="ri-restaurant-line"></i>
@@ -199,11 +231,11 @@ function HotelPage() {
             </div>
             <div className="same-col">
               <div className="img">
-                <img src={room3} alt="" />
+                <img src={room4} alt="" />
               </div>
               <div className="content">
                 <div className="heading-star">
-                  <h4>Super Deluxe</h4>
+                  <h4>Suite Category</h4>
                   <div className="star">
                     <i class="ri-star-s-fill"></i>
                     <i class="ri-star-s-fill"></i>
@@ -215,7 +247,7 @@ function HotelPage() {
                 <div className="services">
                   <div className="service-same">
                     <i class="ri-hotel-bed-fill"></i>
-                    <span>3bed</span>
+                    <span>1bed</span>
                   </div>
                   <div className="service-same">
                     <i class="ri-restaurant-line"></i>

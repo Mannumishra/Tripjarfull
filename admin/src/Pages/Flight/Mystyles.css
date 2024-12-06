@@ -1,0 +1,51 @@
+/* General button styles */
+.filteration .selects button {
+    background-color: #A52A2A;
+    color: #fff;
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: auto; /* Change to auto */
+    min-width: 150px; /* Ensure minimum width */
+    max-width: 300px; /* Set a max-width */
+    text-align: center; /* Center-align text */
+}
+
+/* Active button style */
+.filteration .selects button.active {
+    background-color: #0056b3;
+    color: #fff;
+}
+
+/* Hover effect for all buttons */
+.filteration .selects button:hover {
+    background-color: #0056b3;
+    transform: translateY(-3px);
+}
+
+/* Press down effect */
+.filteration .selects button:active {
+    transform: translateY(1px);
+}
+
+/* Responsive layout */
+.filteration .selects {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Smaller screen adjustments */
+@media (max-width: 576px) {
+    .filteration .selects button {
+        font-size: 14px;
+        padding: 8px 16px;
+        min-width: 120px; /* Adjust minimum width for smaller screens */
+    }
+}

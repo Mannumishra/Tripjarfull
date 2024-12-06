@@ -11,6 +11,7 @@ const FlightRouter = require("./Routes/FlightRouter")
 const HotelRouter = require("./Routes/HotelRouter")
 const ContactRouter = require("./Routes/ContactRouter")
 const PackageInquery = require("./Routes/PackageInqueryRouter")
+const MultiCityRouter = require("./Routes/MultiCityRouter")
 getConnect()
 
 app.use(cors())
@@ -24,6 +25,7 @@ app.use("/api" ,FlightRouter)
 app.use("/api" ,HotelRouter)
 app.use("/api" ,ContactRouter)
 app.use("/api" ,PackageInquery)
+app.use("/api" ,MultiCityRouter)
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running at ${process.env.PORT} port`)
